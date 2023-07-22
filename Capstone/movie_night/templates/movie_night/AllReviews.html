@@ -1,0 +1,49 @@
+{% extends "movie_night/layout.html" %}
+{% load custom_template_tag %}
+
+{% block body %}
+<br>
+<div id="all_reviews">
+    <h4 style="  font-family :Cambria,arial,helvetica;"> &nbsp Reviews :</h4>
+    <br>
+<div class="container">
+
+{% for review in ALL_REVIEWS %}
+<div class="row">
+<div class="col" style="width:80%" >
+  <div class="card" >
+    <div class="card-header"style="color:black;background-color;#3e4145;">
+      <h4>{{review.publisher}}</h4>
+    </div>
+    <div class="card-body" style="background-color:#667285;">
+      <a href=" {% url 'MoviePage' review.movieType review.movieId %}"><p class="card-title" style="color:white;">@{{review.movieName}}</p></a>
+      <p class="card-text"style="color:white;font-size:30px">{{review.Post_text}}</p>
+    </div>
+  </div>
+  <br>
+  </div>
+
+</div>
+
+{% endfor %}
+</div>
+</div>
+<div class="pagination">
+    <span class="step-links">
+        {% if ALL_REVIEWS.has_previous %}
+            <a href="?page=1" class="badge badge-primary"> first</a>
+            <a href="?page={{ ALL_REVIEWS.previous_page_number }}" class="badge badge-primary">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ ALL_REVIEWS.number }} of {{ ALL_REVIEWS.paginator.num_pages }}.
+        </span>
+
+        {% if ALL_REVIEWS.has_next %}
+            <a href="?page={{ ALL_REVIEWS.next_page_number }}" class="badge badge-primary">next</a>
+            <a href="?page={{ ALL_REVIEWS.paginator.num_pages }}" class="badge badge-primary">last </a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

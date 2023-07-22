@@ -1,0 +1,69 @@
+{% extends "movie_night/layout.html" %}
+{% load custom_template_tag %}
+{% block body %}
+<script>
+function GetWatchList(Type,id)
+{
+  if(Type==="movies")
+  {
+    fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=47d9668be462a84d6ce26f4df4277f14&language=en-US`)
+    .then(response => response.json())
+    .then((data) =>{
+     let result= (data);
+     let imgurl=`https://image.tmdb.org/t/p/w500${result.backdrop_path}`;
+     if(result.backdrop_path==null)
+     {
+       imgurl=`https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w2400?source=screenshot.guru"> <img src="https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w251-h201-p-k`;
+     }
+      let Title=result.title;
+    MakeWLBox(imgurl,Title,`movies/${result.id}`);
+    });
+  }
+  if(Type==="series")
+  {
+  fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=47d9668be462a84d6ce26f4df4277f14&language=en-US`)
+  .then(response => response.json())
+  .then((data) =>{
+   let result= (data);
+   let imgurl=`https://image.tmdb.org/t/p/w500${result.backdrop_path}`;
+   if(result.backdrop_path==null)
+   {
+     imgurl=`https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w2400?source=screenshot.guru"> <img src="https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w251-h201-p-k`;
+   }
+  MakeWLBox(imgurl,result.original_name,`series/${result.id}`);
+  });
+  }
+}
+function MakeWLBox(im,ti,ur)
+{
+  const Welement = document.createElement('div');
+  Welement.innerHTML=`
+  <div class="row">
+    <div class="col">
+    <br>
+    <img src='${im}' width='60%'>
+        <br>
+      <a href='${ur}' style="color:white;" >${ti}</a>
+
+    </div>
+    </div><hr color="white">`
+    document.querySelector("#wl").append(Welement);
+
+}
+</script>
+
+
+<div  id="wl" class="container">
+<h1>My watchlist</h1>
+</div>
+{% for wls in WATCHLIST %}
+
+{% if wls.t == "movies" %}
+<script> GetWatchList("movies",{{wls.m}}); </script>
+{%endif%}
+{% if wls.t == "series" %}
+<script> GetWatchList("series",{{wls.m}}); </script>
+{%endif%}
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends "movie_night/layout.html" %}
+{% load custom_template_tag %}
+
+
+{% block body %}
+<script>
+
+//Movie Box
+function MakeMovieBox(movieId,movieType,Poster,Title,tagline,Description,Rate,release,homepage,auth){
+const ShowElement = document.createElement('div');
+ShowElement.innerHTML=`
+<br>
+<div class="container">
+<div class="row">
+<div class="col">
+<img src='${Poster}' width='70%'>
+</div>
+</div>
+<div class="col">
+<div class="row" id="TitleCell">
+<h2>${Title}</h2>
+</div>
+<div class="row">
+<h6>${tagline}</h6>
+</div>
+<div class="row">
+<p style="font-family:arial">'${Description}'</p>
+</div>
+<div class="row">
+Rate on tmdb : ${Rate}/10
+</div>
+<div class="row">
+Released in ${release}
+</div>
+<div class="row">
+visit homepage  &nbsp<a href='${homepage}'>${homepage}<a>
+</div>
+</div>
+</div><hr color="white">`;
+document.querySelector("#MovieContent").append(ShowElement);
+if(auth){
+CreateMakeBox(`${Title}`,`${movieType}`,`${movieId}`);}
+
+}
+var TYPE;
+function fetchMovie(movieid,auth)
+{
+  fetch(`https://api.themoviedb.org/3/movie/${movieid}?api_key=${API_KEY}&language=en-US`)
+  .then(response => response.json())
+  .then((data) =>{
+   let result= (data);
+   let imgurl=`https://image.tmdb.org/t/p/w500${result.backdrop_path}`;
+   if(result.backdrop_path==null)
+   {
+     imgurl=`https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w2400?source=screenshot.guru"> <img src="https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w251-h201-p-k`;
+   }
+    let Title=result.title;
+    TYPE='movies';
+    console.log('oooo');
+  MakeMovieBox(movieid,"movies",imgurl,Title,result.tagline,result.overview,result.vote_average,result.release_date,result.homepage,auth);
+  });
+}
+function fetchSeries(movieid,auth)
+{
+fetch(`https://api.themoviedb.org/3/tv/${movieid}?api_key=${API_KEY}&language=en-US`)
+.then(response => response.json())
+.then((data) =>{
+ let result= (data);
+TYPE='series';
+console.log('oooo');
+MakeMovieBox(movieid,"series",`https://image.tmdb.org/t/p/w500${result.backdrop_path}`,result.original_name,result.tagline,result.overview,result.vote_average,result.first_air_date,result.homepage,auth);
+});
+}
+function CreateMakeBox(title,movieType,movieId){
+const Celement=document.createElement('div');
+Celement.innerHTML=`
+<h5 style="  font-family :Cambria,arial,helvetica;"> &nbsp Write your opinion here :</h5>
+<form action="{% url 'CreateReview' %}" class="form-group" method="post" >
+<input type="hidden" name="movieName" value='${title}' />
+<input type="hidden" name="movieType" value='${movieType}' />
+<input type="hidden" name="movieId" value='${movieId}' />
+<textarea class="form-control" style="margin-left: 20px;width:75%;height:125px" placeholder="Create your review here..." name="Post_Content"></textarea>
+<br>
+<button class="btn btn-outline-primary" style="margin-left: 20px;" type="submit">Post</button>
+</form> <br> <hr color="white">`;
+document.querySelector('#createReview').append(Celement);
+}
+
+//Add to WatchList
+function CreateWatchListBTN(Current_state,userName,movieID)
+{
+  console.log(Current_state);
+  var btn_name= "Add to watchList";
+  if(!Current_state)  { btn_name= "Remove from watchList"; }
+  const BTN = document.createElement('div');
+  BTN.innerHTML=`<button class="btn btn-primary" id="WatchList_btn">${btn_name}</button>`;
+  if (BTN.querySelector('#WatchList_btn'))
+  {
+    let element=BTN.querySelector('#WatchList_btn');
+    element.addEventListener('click', ()=>
+    {
+
+      if(element.innerHTML=="Add to watchList")
+      {
+        fetch(`http://127.0.0.1:8000/Add/${movieID}/${TYPE}`);
+        element.innerHTML='Remove from watchList';
+      }
+      else
+      {
+        fetch(`http://127.0.0.1:8000/Remove/${movieID}/${TYPE}`);
+        element.innerHTML='Add to watchList';
+      }
+
+    });
+  }
+  document.querySelector('#WhatchList').append(BTN);
+}
+
+</script>
+
+<div id="MovieContent">
+{% if Type == "series" %}
+{% if user.is_authenticated %}
+<script>fetchSeries({{MovieId}},1)</script>
+{% endif %}
+{% if not user.is_authenticated %}
+<script>fetchSeries({{MovieId}},0)</script>
+{% endif %}
+{% endif %}
+{% if Type == "movies" %}
+{% if user.is_authenticated %}
+<script>fetchMovie({{MovieId}},1)</script>
+{% else %}
+<script>fetchMovie({{MovieId}},0)</script>
+{% endif %}
+{% endif %}
+</div>
+<br>
+<br>
+{% if user.is_authenticated %}
+<div id="WhatchList">
+<script> CreateWatchListBTN({% MyFun request.user MovieId %},"{{user.username}}",{{MovieId}}) </script>
+</div>
+<div id='createReview'>
+
+</div>
+{% endif %}
+<br>
+<br>
+<div id="all_reviews">
+    <h4 style="  font-family :Cambria,arial,helvetica;"> &nbsp Reviews :</h4>
+    <br>
+<div class="container">
+
+  {% for review in REVIEWS %}
+  <div class="row">
+  <div class="col" style="width:80%" >
+    <div class="card" >
+      <div class="card-header"style="color:black;background-color;#3e4145;">
+        <h4>{{review.publisher}}</h4>
+      </div>
+      <div class="card-body" style="background-color:#667285;">
+        <p class="card-title" style="color:white;">@{{review.movieName}}</p>
+        <p class="card-text"style="color:white;font-size:30px">{{review.Post_text}}</p>
+      </div>
+    </div>
+    <br>
+    </div>
+
+  </div>
+
+  {% endfor %}
+</div>
+</div>
+</div>
+{% endblock %}

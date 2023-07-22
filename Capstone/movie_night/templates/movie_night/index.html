@@ -1,0 +1,239 @@
+{% extends "movie_night/layout.html" %}
+
+
+
+{% block body %}
+<script>
+//Animatiob/Body switch
+document.addEventListener("DOMContentLoaded",() => {
+elementBody=document.getElementById('IndexBody');
+animelement=document.querySelector(".WelcomeAnime");
+animelement.addEventListener("animationend", () =>{
+animelement.parentElement.display="none";
+animelement.parentElement.remove();
+elementBody.style.display='block';
+
+});});
+
+
+
+function MakeTen(topTitlesP,topImagesP,Title,topurl)
+{
+  const element = document.createElement('div');
+  element.innerHTML=`
+
+  <div class="container">
+  <div class="row">
+  <div class="col">
+  <h2>${Title}</h2>
+  </div>
+  </div>
+  <div class="row">
+    <div class="col">
+    <img src='${topImagesP[0]}' width='125'>
+        <br>
+      <a href='${topurl[0]}' style="color:white;" >${topTitlesP[0]}</a>
+
+    </div>
+    <div class="col">
+    <img src='${topImagesP[1]}' width='125'>
+        <br>
+    <a href='${topurl[1]}'style="color:white;" >${topTitlesP[1]}</a>
+    </div>
+    <div class="col">
+    <img src='${topImagesP[2]}' width='125'>
+        <br>
+      <a href='${topurl[2]}' style="color:white;">${topTitlesP[2]}</a>
+    </div>
+    <div class="col">
+    <img src='${topImagesP[3]}' width='125'>
+        <br>
+    <a href='${topurl[3]}'style="color:white;" >${topTitlesP[3]}</a>
+    </div>
+    <div class="col">
+    <img src='${topImagesP[4]}' width='125'>
+        <br>
+    <a href='${topurl[4]}'style="color:white;" >${topTitlesP[4]}</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+    <img src='${topImagesP[5]}' width='125'>
+        <br>
+      <a href='${topurl[5]}'style="color:white;" >${topTitlesP[5]}</a>
+    </div>
+    <div class="col">
+    <img src='${topImagesP[6]}' width='125'>
+        <br>
+    <a href='${topurl[6]}'style="color:white;" >${topTitlesP[6]}</a>
+    </div>
+    <div class="col">
+    <img src='${topImagesP[7]}' width='125'>
+        <br>
+      <a href='${topurl[7]}' style="color:white;">${topTitlesP[7]}</a>
+    </div>
+    <div class="col">
+    <img src='${topImagesP[8]}' width='125'>
+        <br>
+    <a href='${topurl[8]}'style="color:white;" >${topTitlesP[8]}</a>
+    </div>
+    <div class="col">
+    <img src='${topImagesP[9]}' width='125'>
+    <br>
+    <a href='${topurl[9]}'style="color:white;" >${topTitlesP[9]}</a>
+    </div>
+
+  </div>
+  </div><br> <hr color="white"> <br>`;
+  return element;
+
+}
+var Arr=["movie/popular","tv/popular","movie/top_rated","movie/now_playing"];
+var Arr2=["Popular movies","Popular series","Top rated movies","New releases"];
+let k=0;
+for(var i=0;i<4;i++){
+console.log(i);
+fetch( `https://api.themoviedb.org/3/${Arr[i]}?api_key=${API_KEY}&language=en-US&page=1` )
+.then(response => response.json())
+.then((data) =>{
+
+ let result= (data.results);
+ let ListTitle=[];
+ let ListImage=[];
+ let ListUrl=[];
+ let TYpe=Arr2[i];
+ console.log(k);
+ console.log(Arr2[k]);
+for (var j=0;j<10;j++)
+{
+  if(k==1)
+  {  ListTitle.push(result[j].name);}
+  else{  ListTitle.push(result[j].title);}
+  ListImage.push(`https://image.tmdb.org/t/p/w500${result[j].poster_path}`);
+    if(k==1)
+    {  ListUrl.push(`series/${result[j].id }`);}
+    else{  ListUrl.push(`movies/${result[j].id }`);}
+
+}
+
+document.querySelector("#IndexBody").append(MakeTen(ListTitle,ListImage,Arr2[k],ListUrl));
+k++;
+});
+
+}
+
+
+document.addEventListener("DOMContentLoaded",() => {
+document.querySelector("#SearchBtn").addEventListener("click",() =>
+{
+console.log("start search");
+console.log(document.querySelector("#SearchBox").value);
+let element=document.querySelector("#SearchBox").value;
+if(/\S/.test(element))
+{
+  console.log("element");
+  fetch( `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=${element}&page=1&include_adult=false` )
+  .then(response => response.json())
+  .then((data) =>{
+   let result= (data.results);
+   let ListTitle=[];
+   let ListImage=[];
+   let ListUrl=[];
+   let len=0;
+   if(result.length>=10)
+   {len=9;}
+   if(result.length<10)
+   {len=result.length-1;}
+  for (var i=0;i<10;i++)
+  {
+    if(i>len)
+    {
+      ListTitle.push("No Result");
+      ListImage.push('https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w2400?source=screenshot.guru"> <img src="https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w251-h201-p-k"')
+      ListUrl.push(`#`);
+      continue;
+    }
+    if(result[i].title=="undefined")
+    {
+      ListTitle.push(result[i].original_name);
+      ListUrl.push(`movies/${result[i].id }`);
+    }
+    else{
+    ListTitle.push(result[i].title);
+    ListUrl.push(`movies/${result[i].id }`);
+  }
+    if(result[i].poster_path==null)
+    {
+      ListImage.push('https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w2400?source=screenshot.guru"> <img src="https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w251-h201-p-k"')
+    }
+    else
+    {
+      ListImage.push(`https://image.tmdb.org/t/p/w500${result[i].poster_path}`);
+    }
+  }
+  document.querySelector("#MovieSearchResults").innerHTML="";
+  document.querySelector("#MovieSearchResults").prepend(MakeTen(ListTitle,ListImage,`Movie search results "${element}"`,ListUrl));
+  });
+  fetch( `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&language=en-US&query=${element}&page=1&include_adult=false` )
+  .then(response => response.json())
+  .then((data) =>{
+   let result= (data.results);
+   let ListTitle=[];
+   let ListImage=[];
+   let ListUrl=[];
+  let len=0;
+  if(result.length>=10)
+  {len=9;}
+  if(result.length<10)
+  {len=result.length-1;}
+  for (var i=0;i<10;i++)
+  {
+    if(i>len)
+    {
+      ListTitle.push("No Result");
+      ListUrl.push(`#`);
+      ListImage.push('https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w2400?source=screenshot.guru"> <img src="https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w251-h201-p-k"')
+      continue;
+    }
+    if(result[i].title==null)
+    {
+      ListTitle.push(result[i].name);
+      ListUrl.push(`series/${result[i].id }`);
+    }
+    else{
+    ListTitle.push(result[i].title);
+    ListUrl.push(`series/${result[i].id }`);
+  }    if(result[i].poster_path==null)
+    {
+      ListImage.push('https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w2400?source=screenshot.guru"> <img src="https://lh3.googleusercontent.com/sjTzSpOC87QOje6RLcHc7lw4hjd12b1sAhX_Yxq3lKpiVZCOrOc1ZalqQM-ihgdH6hqhdNHXIOEm1yBwvVWfOLa41Lx8p2usOiLOpRAvOACojlg_ONCOSsVPAAMLxDRk1qxsRwuL=w251-h201-p-k"')
+    }
+    else
+    {
+      ListImage.push(`https://image.tmdb.org/t/p/w500${result[i].poster_path}`);
+    }
+  }
+  document.querySelector("#TvSearchResults").innerHTML="";
+  document.querySelector("#TvSearchResults").append(MakeTen(ListTitle,ListImage,`TV shows search results "${element}"`,ListUrl));
+  });
+}
+});
+});
+</script>
+
+
+<div id="Welcome">
+<h1 class="WelcomeAnime"> &nbsp &nbsp &nbsp &nbsp Welcome <br> <span>To The Movie Night</span></h1>
+</div>
+
+<div id="IndexBody" >
+  <div class="search">
+  <input id="SearchBox"type="text" placeholder="Search.." name="search">
+  <button id="SearchBtn"><i class="fa fa-search"></i></button>
+  </div>
+  <div id="MovieSearchResults">
+  </div>
+  <div id="TvSearchResults">
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+@keyframes Welcome {
+  0% {left: 0%; top: 40%;}
+  50% {left: 40%;top: 40%; }
+  100% {left: -50%;top: 40%;}
+}
+.WelcomeAnime
+{
+  font-family :Cambria,arial,helvetica;
+  position:fixed;
+  animation-name :Welcome;
+  animation-duration : 4s;
+  animation-fill-mode: forwards;
+  z-index: 3;
+}
+#IndexBody
+{
+  display: none;
+}
+.search input[type=text] {
+  padding: 10px;
+  font-size: 17px;
+  border: 1px solid grey;
+  float: left;
+  width: 40%;
+  position:relative;
+  left:20%;
+  background: #f1f1f1;
+}
+
+.search button {
+  float: left;
+  width: 5%;
+  padding: 10px;
+  position:relative;
+    left:20%;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none;
+  cursor: pointer;
+}
+
+.search button:hover {
+  background: #0b7dda;
+}
+
+.search::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+</style>
