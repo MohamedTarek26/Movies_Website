@@ -1,4 +1,4 @@
-#Project_overview
+# Project_overview
 1. "Movie Night" project shows recommendations for the movies and series by showing the popular, top rated, newly released movies and series according to the database of (the movie database (tmdb)).
 
 2. Users can also search for movies using this website to show information like its rate on tmdb, the famous tagline of the work release date, short, description of the work and an official link where the user can visit the homepage of the work .
@@ -11,7 +11,7 @@
 
 6. Finally, the front-end is designed in dark mode and the grid of bootstrap and the website is mobile responsive.
 --------------------------------------------------------------------------------------------
-#urls.py
+# urls.py
 1. /login : calls login_view function from views.
 
 2. /logout : calls login_view function from views.
@@ -34,7 +34,7 @@
 
 *** more info about function in views.py section in this page ***
 --------------------------------------------------------------------------------------------
-#views.py
+# views.py
 1. index(request) : renders the index.html from the templates.
 
 2. GetMovie (request, Type, MovieId ) : renders MoviePage.html which passes the Type(movie or series) parameter and MovieID parameter as django template variables in that will be used in the URL which is fetched to get data through the tmdb API and also gets the reviews of that movie or series by filtering Review model objest which has that type and id.
@@ -49,14 +49,14 @@
 
 6. GetWatchList(request) : renders the WatchList.html template passing in it the watchListLink objects of the requesting user.
 --------------------------------------------------------------------------------------------
-#models.py
+# models.py
 1. Review model: which contains publisher name, description, name of the mentioned movie ,the work type whether it is a movie or series and the movie id on tmdb as attributes.
 
 2. User model : besides default attributes of abstract User, Watch list is added as an attribute which is a Foreign Key from watchListLink model.
 
 3. watchListLink model : is just a linkage model which links a user to a movie representing it by its id and it type in order to create a watchlist item.
 --------------------------------------------------------------------------------------------
-#front-end
+# front-end
 1. index.html : It's the home page of the website. It starts with welcome animation then it shows the top 10 movies, most popular movies / series and recent movies . This info is fetched by using fetch statement of javascript from the tmdb API . It includes a search bar that take the input and pass it as a parameter in the URL of fetching the top 10 matching searches and show them in a grid style . The case that the results may be less than 10 is handled as the remaining results will be under the name "no result" with "no photo" sign. The div "Welcome" renders for the first 4 sec then its display becomes none then the "IndexBody" div display becomes block to render the grids of the movies and series and the search bar .  The arrangement of movies are arranged in tens using grid mode .
 
 2. AllReviews.hmtl : It shows all reviews of all users where the reviews is rendered as a bootstrap box its title is the user name, it's subtitle is a link the reviewed movie page and its body is the review . It gets its information from the variable "All_Reviews" passed by the python function in the views as django template variable . It shows the reviews in paginated way 5 per page.
@@ -68,5 +68,5 @@
 5. layout.html : The base layout of all the templates of the website which sows a navigation bar to navigate between home, All Reviews, WatchList, login, logout and register.
 *** the 3 files : layout.html, register.html and login.html aren't so different from the previous projects except in the dark mode and some other things ***
 --------------------------------------------------------------------------------------------
-#logout_view
+# logout_view
 the non logged in user can't write a review and can't add to watchlist but can access all other features.
